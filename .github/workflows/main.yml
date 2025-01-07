@@ -1,0 +1,43 @@
+name: Blazor Web App CI/CD
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build-and-run:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v3
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: '8.0.x' # Use .NET 8
+
+    - name: Restore Dependencies
+      run: dotnet restore
+
+    - name: Build Application
+      run: dotnet build --configuration Release
+
+    - name: Publish Application
+      run: dotnet publish -c Release -o ./publish
+
+    - name: Start Application
+      run: |
+        nohup dotnet ./publish/YourBlazorApp.dll &
+        echo "Application is running..."
+
+    - name: Verify Application
+      run: |
+        curl -f http://localhost:5000 || exit 1
+
+    - name: Keep Runner Alive (Optional for Debugging)
+      run: sleep 300
