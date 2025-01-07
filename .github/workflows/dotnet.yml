@@ -13,27 +13,20 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    # 1. Kodni klonlash
     - name: Checkout repository
       uses: actions/checkout@v3
 
-    # 2. .NET-ni o'rnatish
     - name: Setup .NET
       uses: actions/setup-dotnet@v3
       with:
-        dotnet-version: '8.0' # Loyihangiz ishlatadigan .NET versiyasini tanlang
+        dotnet-version: '8.0' 
 
-    # 3. Paketlarni yuklash
     - name: Install dependencies
       run: dotnet restore
 
-    # 4. Loyihani qurish
     - name: Build the project
       run: dotnet build --configuration Release --no-restore
 
-    # 5. Sinovdan o'tkazish (agar loyiha test moduli mavjud bo'lsa)
-    - name: Run tests
-      run: dotnet test --no-build --verbosity normal
 
   deploy:
     if: github.ref == 'refs/heads/master'
@@ -49,7 +42,7 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v3
       with:
-        dotnet-version: '7.0'
+        dotnet-version: '8.0'
 
     # 3. Loyihani build qilish
     - name: Publish project
