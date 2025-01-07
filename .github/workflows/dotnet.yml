@@ -1,0 +1,63 @@
+name: .NET Build and Deploy
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    # 1. Kodni klonlash
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    # 2. .NET-ni o'rnatish
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: '7.0' # Loyihangiz ishlatadigan .NET versiyasini tanlang
+
+    # 3. Paketlarni yuklash
+    - name: Install dependencies
+      run: dotnet restore
+
+    # 4. Loyihani qurish
+    - name: Build the project
+      run: dotnet build --configuration Release --no-restore
+
+    # 5. Sinovdan o'tkazish (agar loyiha test moduli mavjud bo'lsa)
+    - name: Run tests
+      run: dotnet test --no-build --verbosity normal
+
+  deploy:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    needs: build
+
+    steps:
+    # 1. Kodni klonlash
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    # 2. .NET-ni o'rnatish
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: '7.0'
+
+    # 3. Loyihani build qilish
+    - name: Publish project
+      run: dotnet publish -c Release -o build
+
+    # 4. GitHub Pages orqali deploy qilish (Blazor WebAssembly uchun)
+    - name: Deploy to GitHub Pages
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./build/wwwroot
