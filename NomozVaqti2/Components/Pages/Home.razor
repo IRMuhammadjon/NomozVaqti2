@@ -1,0 +1,91 @@
+﻿@page "/"
+
+<MudTable Items="@NomozVaqtlari" Hover="true" Breakpoint="Breakpoint.None" Loading="@_loading" LoadingProgressColor="Color.Info">
+    <HeaderContent>
+        <MudTh>Icon</MudTh>
+        <MudTh>Name</MudTh>
+        <MudTh>Time</MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="Icon">
+            <MudIcon Icon="@context.Icon" Color="Color.Primary" />
+        </MudTd>
+        <MudTd DataLabel="Name">@context.Name</MudTd>
+        <MudTd DataLabel="Time">@context.Time</MudTd>
+    </RowTemplate>
+</MudTable>
+
+@code {
+    private bool _loading = true;
+    private List<Nomozvaqtlari> NomozVaqtlari = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        _loading = true;
+        try
+        {
+            var apiResponse = await GetPrayerTimesAsync("Tashkent");
+            if (apiResponse != null)
+            {
+                NomozVaqtlari = new List<Nomozvaqtlari>
+                {
+                    new Nomozvaqtlari { Name = "Fajr", Time = apiResponse.Fajr, Icon = Icons.Material.Filled.Brightness5 },
+                    new Nomozvaqtlari { Name = "Dhuhr", Time = apiResponse.Dhuhr, Icon = Icons.Material.Filled.WbSunny },
+                    new Nomozvaqtlari { Name = "Asr", Time = apiResponse.Asr, Icon = Icons.Material.Filled.Brightness5 },
+                    new Nomozvaqtlari { Name = "Maghrib", Time = apiResponse.Maghrib, Icon = Icons.Material.Filled.Brightness4 },
+                    new Nomozvaqtlari { Name = "Isha", Time = apiResponse.Isha, Icon = Icons.Material.Filled.NightsStay }
+                };
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error fetching prayer times: {ex.Message}");
+        }
+        finally
+        {
+            _loading = false;
+        }
+    }
+
+    private async Task<PrayerTimes?> GetPrayerTimesAsync(string city)
+    {
+        using var client = new HttpClient();
+        var url = $"https://api.aladhan.com/v1/timingsByAddress?address={city}";
+        var response = await client.GetAsync(url);
+
+        if (response.IsSuccessStatusCode)
+        {
+            var json = await response.Content.ReadAsStringAsync();
+            var result = JsonSerializer.Deserialize<ApiResponse>(json, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+            return result?.Data?.Timings;
+        }
+
+        return null;
+    }
+
+    private class ApiResponse
+    {
+        public Data? Data { get; set; }
+    }
+
+    private class Data
+    {
+        public PrayerTimes? Timings { get; set; }
+    }
+
+    private class PrayerTimes
+    {
+        public string Fajr { get; set; } = "";
+        public string Dhuhr { get; set; } = "";
+        public string Asr { get; set; } = "";
+        public string Maghrib { get; set; } = "";
+        public string Isha { get; set; } = "";
+    }
+
+    private class Nomozvaqtlari
+    {
+        public string Name { get; set; }
+        public string Time { get; set; }
+        public string Icon { get; set; }
+    }
+}

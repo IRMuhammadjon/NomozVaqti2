@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.11.35219.272
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NomozVaqti2", "NomozVaqti2\NomozVaqti2.csproj", "{CEB59D7D-1B42-4837-A038-D12E5B804BAD}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{CEB59D7D-1B42-4837-A038-D12E5B804BAD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CEB59D7D-1B42-4837-A038-D12E5B804BAD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CEB59D7D-1B42-4837-A038-D12E5B804BAD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CEB59D7D-1B42-4837-A038-D12E5B804BAD}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {08ED29D2-83BA-461D-93A3-46D7044A0F42}
+	EndGlobalSection
+EndGlobal
